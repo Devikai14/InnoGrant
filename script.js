@@ -22,30 +22,37 @@ function signup() {
     let username = document.getElementById("signup-username").value;
     let password = document.getElementById("signup-password").value;
 
-    if (!localStorage.getItem(username)) {
-        // Collect profile data
-        let stream = document.getElementById("signup-stream").value;
-        let percentage = document.getElementById("signup-percentage").value;
-        let religion = document.getElementById("signup-religion").value;
-        let caste = document.getElementById("signup-caste").value;
+    // Check if the user already exists
+    let existingUser = localStorage.getItem(username);
 
+    if (!existingUser) {
+        // If user does not exist, create a new user
         let newUser = {
             username: username,
-            password: password,
-            stream: stream,
-            percentage: percentage,
-            religion: religion,
-            caste: caste
+            password: password
         };
 
         // Store the new user and their profile data
         localStorage.setItem(username, JSON.stringify(newUser));
         localStorage.setItem("currentUser", username);
-        window.location.href = "profile.html";
+        
+        // Redirect to login page after sign-up
+        window.location.href = "login.html";
     } else {
-        alert("User already exists. Please login.");
+        // If the user exists, check if the password matches
+        let user = JSON.parse(existingUser);
+
+        if (user.password === password) {
+            // If password matches, log in the user
+            localStorage.setItem("currentUser", username);
+            window.location.href = "profile.html";
+        } else {
+            // If password doesn't match, alert the user
+            alert("Incorrect password. Please try again.");
+        }
     }
 }
+
 
 // Profile Page: Save stream, percentage, religion, and caste into localStorage
 function saveProfile() {
